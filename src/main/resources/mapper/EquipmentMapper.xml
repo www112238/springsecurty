@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warrior.mapper.EquipmentMapper">
+
+
+    <!--查询设备信息-->
+    <select id="findAllEquipment" resultType="Equipment">
+        select equipment_id, name, model, serial_number, purchase_date, status, department, responsible_person, category from equipment;
+
+    </select>
+
+    <!--1插入-->
+    <insert id="addEquipment" parameterType="Equipment" useGeneratedKeys="true" keyProperty="equipmentId">
+        insert into equipment(equipment_id,name,model,serial_number,purchase_date,status,department,responsible_person,category)
+        value (#{equipmentId},#{name},#{model},#{serialNumber},#{purchaseDate},#{status},#{department},#{responsiblePerson},#{category})
+    </insert>
+
+
+    <!--2查询-->
+    <select id="selectByEquipmentId" resultType="Equipment">
+        select equipment_id, name, model, serial_number, purchase_date, status, department, responsible_person, category
+        from equipment where equipment_id = #{equipmentId}
+    </select>
+
+
+    <!--5.1按部门查次数-->
+    <select id="selectTotalCountByDepartMap"  resultType="java.util.LinkedHashMap">
+        select department,count(*) as maintenanceCount
+        from equipment_sub left join equipment on equipment_sub.equipment_id = equipment.equipment_id
+        group by department;
+
+    </select>
+    <!--5.2按部门查费用-->
+    <select id="selectTotalCostByDepartMap"  resultType="java.util.LinkedHashMap">
+        select department,sum(maintenance_cost) as maintenanceCost
+        from equipment_sub left join equipment on equipment_sub.equipment_id = equipment.equipment_id
+        group by department;
+
+    </select>
+
+    <!--5.3按设备查次数-->
+    <select id="selectTotalCountByEquipMap"  resultType="java.util.LinkedHashMap">
+        select department,count(*) as maintenanceCount
+        from equipment_sub left join equipment on equipment_sub.equipment_id = equipment.equipment_id
+        group by department;
+
+    </select>
+    <!--5.4按设备查费用-->
+    <select id="selectTotalCostByEquipMap"  resultType="java.util.LinkedHashMap">
+        select name,sum(maintenance_cost) as maintenanceCost
+        from equipment_sub left join equipment on equipment_sub.equipment_id = equipment.equipment_id
+        group by name;
+
+    </select>
+
+
+</mapper>
